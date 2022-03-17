@@ -21,26 +21,24 @@ const divide = function(number1, number2){
 
 //This function calls the appropriate math function above
 const operate = function(number1, number2, operator){
+    console.log("logic: " + number1 + " " + number2 + " " + operator)
     switch(operator) {
         case '+':
-            console.log("Add: " + add(number1, number2));
             return add(number1, number2);
-            break;
         case '-':
-            console.log("Subtract: " + subtract(number1, number2));
             return subtract(number1, number2);
-            break;
         case 'x':
-            console.log("Multiply: " + multiply(number1, number2));
             return multiply(number1, number2);
-            break;
         case '÷':
-            console.log("Divide: " + divide(number1, number2));
-            return divide(number1, number2);
-            break;
+            if(number2 === 0){
+                return 'infinity';
+            }
+            else{
+                return divide(number1, number2);
+            }
         default:
             console.log("Something went wrong.");
-            return 0;
+            return;
     }
 }
 
@@ -58,63 +56,53 @@ function updateDisplay(){
         divScreen[0].textContent = "";
     }
 
+    //if the user presses AC button, wipe the screen and the calArray to start fresh
     if(this.textContent === 'AC'){
         calArray = [];
         divScreen[0].textContent = "";
         divScreen[0].textContent = '0';
     }
+    //if the user presses Delete button, delete the last thing the user entered
     else if(this.textContent === 'Delete'){
         let index = (calArray.length - 1);
-        
-        console.log(" ");
-        console.log("delete picked");
-        console.log(calArray);
-        console.log("cal array above: " + calArray);
-        console.log("cal array len above: " + calArray.length);
-        console.log("string above: " + divScreen[0].textContent);
-        console.log("index above: " + index);
-        console.log("ele above: " + calArray[index]);
-        console.log(" ");
-        console.log("Action here: " + (divScreen[0].textContent.slice(0, index)));
-        console.log("Second action: " + (divScreen[0].textContent.slice(index + 1)));
-        console.log(" ");
-
-        // console.log("linput: " + lastIndexOfLastInput);
-        // divScreen[0].textContent = divScreen[0].textContent.replace(calArray[calArray.length - 1], '');
-        // divScreen[0].textContent = divScreen[0].textContent.replace(calArray[index], '');
         divScreen[0].textContent = divScreen[0].textContent.slice(0, index) + 
                                     divScreen[0].textContent.slice(index + 1);
         calArray.pop(); 
         index--;
-        console.log(calArray);
-        console.log("cal array below: " + calArray);
-        console.log("cal array len below: " + calArray.length);
-        console.log("string below: " + divScreen[0].textContent);
-        console.log("ele below: " + calArray[index]);
-        console.log("index below: " + index);
     }
+    //push the entry to the calArray and display the entered input onto the screen
     else{
         divScreen[0].textContent += this.textContent;
         calArray.push(this.textContent);
     }
 
+    //if the user presses the equal sign, then call on the operate function to get the answer 
+    //and display that answer
     if(this.textContent === '='){
         divScreen[0].textContent = "";
-        previousAnswer = calculate(calArray).toString();
-        divScreen[0].textContent += previousAnswer;
-        calArray = [];
-        calArray.push(previousAnswer);
+        previousAnswer = calculate(calArray);
 
-        // console.log("Type of previous answer: " + (typeof previousAnswer));
-        // previousAnswerToString = previousAnswer.toString();
-        // console.log("Type of previous answer as string: " + (typeof previousAnswerToString));
-        // divScreen[0].textContent += previousAnswerToString;
-        // console.log("prev ans: " + previousAnswerToString);
-        // calArray = [];
-        // calArray.push(previousAnswerToString.split(""));
-        // console.log("check this cal: " + calArray);
+        if(previousAnswer === 'infinity'){
+            divScreen[0].textContent = "";
+            divScreen[0].textContent = "Only secret members can know that answer...";
+            calArray = [];
+        }
+        else if(isNaN(previousAnswer)){
+            divScreen[0].textContent = "";
+            divScreen[0].textContent = "MATH ERROR";
+            calArray = [];
+        }
+        else{
+            previousAnswerToString = previousAnswer.toString().split("");
+            calArray = [];
+            
+            for(let i = 0; i < previousAnswerToString.length; i++){
+                calArray.push(previousAnswerToString[i]);
+                divScreen[0].textContent += previousAnswerToString[i];
+            }
+        }
     }
-}
+}//end of updateDisplay function
 
 
 function calculate(array){
