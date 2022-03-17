@@ -1,5 +1,6 @@
 let calArray = [];
 let previousAnswer = 0;
+const divScreen = document.getElementsByClassName('calculator-screen');
 
 //Various functions to perfrom the math operations
 const add = function(number1, number2) {
@@ -43,8 +44,6 @@ const operate = function(number1, number2, operator){
     }
 }
 
-const divScreen = document.getElementsByClassName('calculator-screen');
-
 function allEventsToAllButtons(){
     let buttons = document.querySelectorAll('.cal-btn');
 
@@ -54,19 +53,69 @@ function allEventsToAllButtons(){
 }
 
 function updateDisplay(){
-    // if(divScreen[0].textContent === '0'){
-    //     divScreen[0].textContent = "";
-    // }
+    
+    if(divScreen[0].textContent === '0'){
+        divScreen[0].textContent = "";
+    }
 
-    divScreen[0].textContent += this.textContent;
-    calArray.push(this.textContent);
+    if(this.textContent === 'AC'){
+        calArray = [];
+        divScreen[0].textContent = "";
+        divScreen[0].textContent = '0';
+    }
+    else if(this.textContent === 'Delete'){
+        let index = (calArray.length - 1);
+        
+        console.log(" ");
+        console.log("delete picked");
+        console.log(calArray);
+        console.log("cal array above: " + calArray);
+        console.log("cal array len above: " + calArray.length);
+        console.log("string above: " + divScreen[0].textContent);
+        console.log("index above: " + index);
+        console.log("ele above: " + calArray[index]);
+        console.log(" ");
+        console.log("Action here: " + (divScreen[0].textContent.slice(0, index)));
+        console.log("Second action: " + (divScreen[0].textContent.slice(index + 1)));
+        console.log(" ");
+
+        // console.log("linput: " + lastIndexOfLastInput);
+        // divScreen[0].textContent = divScreen[0].textContent.replace(calArray[calArray.length - 1], '');
+        // divScreen[0].textContent = divScreen[0].textContent.replace(calArray[index], '');
+        divScreen[0].textContent = divScreen[0].textContent.slice(0, index) + 
+                                    divScreen[0].textContent.slice(index + 1);
+        calArray.pop(); 
+        index--;
+        console.log(calArray);
+        console.log("cal array below: " + calArray);
+        console.log("cal array len below: " + calArray.length);
+        console.log("string below: " + divScreen[0].textContent);
+        console.log("ele below: " + calArray[index]);
+        console.log("index below: " + index);
+    }
+    else{
+        divScreen[0].textContent += this.textContent;
+        calArray.push(this.textContent);
+    }
 
     if(this.textContent === '='){
         divScreen[0].textContent = "";
-        previousAnswer = calculate(calArray);
+        previousAnswer = calculate(calArray).toString();
         divScreen[0].textContent += previousAnswer;
+        calArray = [];
+        calArray.push(previousAnswer);
+
+        // console.log("Type of previous answer: " + (typeof previousAnswer));
+        // previousAnswerToString = previousAnswer.toString();
+        // console.log("Type of previous answer as string: " + (typeof previousAnswerToString));
+        // divScreen[0].textContent += previousAnswerToString;
+        // console.log("prev ans: " + previousAnswerToString);
+        // calArray = [];
+        // calArray.push(previousAnswerToString.split(""));
+        // console.log("check this cal: " + calArray);
     }
 }
+
 
 function calculate(array){
     let answer = 0;
